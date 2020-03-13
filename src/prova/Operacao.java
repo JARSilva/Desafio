@@ -1,7 +1,10 @@
 package prova;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,18 +59,13 @@ public class Operacao {
 		this.subProduto = subProduto;
 	}
 	
-	public static List<Operacao> getOperacoes(String path) throws FileNotFoundException{
-		File arquivo = new File(path);
-		boolean pularIndice = true;
-		Scanner sc = new Scanner(arquivo);
+	public static List<Operacao> getOperacoes(String path) throws IOException{
+		BufferedReader bf = new BufferedReader(new FileReader(path));
 		List<Operacao> lista = new ArrayList<Operacao>();
-		while (sc.hasNextLine()) {
-			if(pularIndice) {
-				sc.nextLine();
-				pularIndice = false;
-				continue;
-			}
-			String[] colunas = sc.nextLine().split(";");
+		String linha;
+		bf.readLine();
+		while ((linha = bf.readLine()) != null) {
+			String[] colunas = linha.split(";");
 			int cd = Integer.parseInt(colunas[0]);
 			int prazo = Operacao.calcularDias(colunas[1], colunas[2]);
 			double qtd = Double.parseDouble(colunas[12].replace(',', '.'));
@@ -76,7 +74,7 @@ public class Operacao {
 			Operacao operacao = new Operacao(cd, prazo, qtd, id_preco, subprod);
 			lista.add(operacao);
 		}
-		sc.close();
+		bf.close();
 		return lista;
 		
 	}

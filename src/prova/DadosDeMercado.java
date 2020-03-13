@@ -1,7 +1,9 @@
 package prova;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -53,22 +55,17 @@ public class DadosDeMercado {
 		this.vl_preco = vl_preco;
 	}
 	
-	public static List<DadosDeMercado> getDados(String path) throws FileNotFoundException{
-		File arquivo = new File(path);
-		boolean pularIndice = true;
-		Scanner sc = new Scanner(arquivo);
+	public static List<DadosDeMercado> getDados(String path) throws IOException{
+		BufferedReader bf = new BufferedReader(new FileReader(path));
 		List<DadosDeMercado> lista = new ArrayList<DadosDeMercado>();
-		while (sc.hasNextLine()) {
-			if(pularIndice) {
-				sc.nextLine();
-				pularIndice = false;
-				continue;
-			}
-			String[] colunas = sc.nextLine().split(";");
+		String linha;
+		bf.readLine();
+		while ((linha = bf.readLine()) != null) {
+			String[] colunas = linha.split(";");
 			DadosDeMercado dados = new DadosDeMercado(Integer.parseInt(colunas[0]),Integer.parseInt(colunas[1]),Double.parseDouble(colunas[2].replace(',', '.')));
 			lista.add(dados);
 		}
-		sc.close();
+		bf.close();
 		return lista;
 		
 	}
